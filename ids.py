@@ -1,6 +1,7 @@
 from scapy.all import sniff, IP , TCP , UDP , ICMP
 import time
 from datetime import datetime
+from logger import write_log
 
 scanned_ports = {}
 tcp_alerted = set()
@@ -22,12 +23,11 @@ def alert(alert_type , source , destination  , details):
     print("==============================")
     print()
 
-    with open("LOG_FILE", "a") as log_file:
-        log_file.write(
-            f"{timestamp} | {alert_type} | "
-            f"Source: {source} | Destination: {destination} | "
-            f"{details}\n"
-        )
+    write_log(
+        f"{timestamp} | {alert_type} | "
+        f"Source: {source} | Destination: {destination} | "
+        f"{details}"
+    )
     
 
 
@@ -59,7 +59,7 @@ def packet_callback(packet):
                     "TCP Port Scan",
                     source,
                     destination,
-                    f'Ports scanned: {list(scanned_ports[source].keys())}'
+                    f'Ports scanned: {len(scanned_ports[source])} Unique ports {list(scanned_ports[source].keys())}'
                 )
                 tcp_alerted.add(source)
 
